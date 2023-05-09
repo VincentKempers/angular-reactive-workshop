@@ -16,7 +16,7 @@ import { CoreDataModule } from '@workshop/core-data';
     MaterialModule,
     ReactiveFormsModule,
     FormsModule,
-    CoreDataModule
+    // CoreDataModule
   ],
   declarations: [
     ProjectsComponent,
