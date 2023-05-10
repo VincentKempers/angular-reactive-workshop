@@ -1,19 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import {
-  AddProject,
   Customer,
   CustomersService,
-  DeleteProject,
-  LoadProjects,
   NotificationsService,
   Project,
-  ProjectsService,
-  ProjectsState,
-  selectAllProjects,
-  UpdateProject,
-  selectCurrentProject,
-  SelectProject,
+  ProjectsFacade,
 } from '@workshop/core-data';
 import { Observable } from 'rxjs';
 
@@ -29,10 +21,10 @@ export class ProjectsComponent implements OnInit {
 
   constructor(
     private customerService: CustomersService,
-    private store: Store<ProjectsState>,
+    private facade: ProjectsFacade,
     private ns: NotificationsService) {
-      this.projects$ = store.pipe(select(selectAllProjects));
-      this.currentProject$ = store.pipe(select(selectCurrentProject));
+      this.projects$ = this.facade.projects$;
+      this.currentProject$ = this.facade.currentProject$;
     }
 
   ngOnInit() {
@@ -42,11 +34,11 @@ export class ProjectsComponent implements OnInit {
   }
 
   resetCurrentProject() {
-    this.store.dispatch(new SelectProject(null));
+    this.facade.selectProject(null);
   }
 
   selectProject(project) {
-    this.store.dispatch(new SelectProject(project.id));
+    this.facade.selectProject(project.id)
   }
 
   cancel(project) {
@@ -58,7 +50,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   getProjects() {
-    this.store.dispatch(new LoadProjects());
+    this.facade.getProjects()
   }
 
   saveProject(project) {
@@ -70,21 +62,21 @@ export class ProjectsComponent implements OnInit {
   }
 
   createProject(project) {
-    this.store.dispatch(new AddProject(project));
+    this.facade.createProject(project);
     // These will go away
     this.ns.emit('Project created!');
     this.resetCurrentProject();
   }
 
   updateProject(project) {
-    this.store.dispatch(new UpdateProject(project));
+    this.facade.updateProject(project);
     // These will go away
     this.ns.emit('Project updated!');
     this.resetCurrentProject();
   }
 
   deleteProject(project) {
-    this.store.dispatch(new DeleteProject(project));
+    this.facade.deleteProject(project);
 
     // These will go away
     this.ns.emit('Project deleted!');
